@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tire Shop - Find Your Tires</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #ffffff;
+            padding: 16px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .navbar-brand span {
+            margin-left: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-menu a:hover {
+            color: #dc2626;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #ccc;
+        }
+
+        /* Search Card */
+        .search-card {
+            background: white;
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-card h2 {
+            color: #1a1a1a;
+            font-size: 28px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .search-card .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f8f8;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .form-group select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .form-group select:focus,
+        .form-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: #ffffff;
+        }
+
+        .form-group select:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            color: #999;
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 18px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+            margin-top: 10px;
+        }
+
+        .search-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Info Cards */
+        .info-section {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .info-card h3 {
+            color: #1a1a1a;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .info-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .alert {
+            padding: 14px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 15px;
+            text-align: center;
+        }
+
+        .alert.error {
+            background: #fee;
+            color: #c00;
+            border: 2px solid #fcc;
+        }
+
+        .alert.success {
+            background: #efe;
+            color: #0a0;
+            border: 2px solid #cfc;
+        }
+
+        .alert.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 2px solid #bbdefb;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .search-btn.loading .btn-text {
+            display: none;
+        }
+
+        .search-btn.loading .spinner {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px 20px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .search-card {
+                padding: 30px 20px;
+            }
+
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span>🚗</span>
+            <span>Tire Shop</span>
+        </a>
+        <div class="navbar-menu">
+            <a href="index.html">Home</a>
+            <a href="search.html">Find Tires</a>
+            <a href="#">My Vehicles</a>
+            <a href="#">Tutorial</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero">
+            <h1>Find Your Perfect Tires</h1>
+            <p>Enter your vehicle information to get started</p>
+        </div>
+
+        <!-- Search Card -->
+        <div class="search-card">
+            <h2>Vehicle Information</h2>
+            <p class="subtitle">Tell us about your car and we'll find the right tires</p>
+
+            <div id="alert" class="alert"></div>
+
+            <form id="vehicleForm">
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select id="year" name="year" required>
+                        <option value="">Select Year</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="make">Make</label>
+                    <select id="make" name="make" required disabled>
+                        <option value="">Select Year First</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <select id="model" name="model" required disabled>
+                        <option value="">Select Make First</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="search-btn" id="searchBtn">
+                    <span class="btn-text">Search for Tires</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="info-card">
+                <div class="icon">🔍</div>
+                <h3>Easy Search</h3>
+                <p>Simply enter your vehicle information and we'll find compatible tires from major manufacturers</p>
+            </div>
+            <div class="info-card">
+                <div class="icon">📊</div>
+                <h3>Detailed Info</h3>
+                <p>Get specifications like PSI, tire ply, size, and links to manufacturer websites</p>
+            </div>
+            <div class="info-card">
+                <div class="icon">💾</div>
+                <h3>Save History</h3>
+                <p>Your search history and vehicles are automatically saved for quick access</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MILESTONE 1: Populate dropdowns with sample data
+        // MILESTONE 2+: This will connect to Wheel-Size API
+        
+        // Populate Year dropdown (last 30 years)
+        const yearSelect = document.getElementById('year');
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year >= currentYear - 30; year--) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+        }
+
+        // Sample data for Milestone 1
+        const sampleMakes = {
+            '2024': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Tesla'],
+            '2023': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz', 'Tesla'],
+            '2022': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'BMW', 'Mercedes-Benz'],
+            '2021': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan', 'BMW'],
+            '2020': ['Toyota', 'Honda', 'Ford', 'Chevrolet', 'Nissan', 'Hyundai']
+        };
+
+        const sampleModels = {
+            'Toyota': ['Camry', 'Corolla', 'RAV4', 'Highlander', 'Tacoma', '4Runner'],
+            'Honda': ['Accord', 'Civic', 'CR-V', 'Pilot', 'Odyssey'],
+            'Ford': ['F-150', 'Mustang', 'Explorer', 'Escape', 'Edge'],
+            'Chevrolet': ['Silverado', 'Equinox', 'Malibu', 'Tahoe', 'Camaro'],
+            'BMW': ['3 Series', '5 Series', 'X3', 'X5', 'M3'],
+            'Mercedes-Benz': ['C-Class', 'E-Class', 'GLE', 'GLC', 'S-Class'],
+            'Tesla': ['Model 3', 'Model Y', 'Model S', 'Model X'],
+            'Nissan': ['Altima', 'Rogue', 'Sentra', 'Pathfinder'],
+            'Hyundai': ['Elantra', 'Sonata', 'Tucson', 'Santa Fe']
+        };
+
+        // Year selection handler
+        yearSelect.addEventListener('change', function() {
+            const makeSelect = document.getElementById('make');
+            const modelSelect = document.getElementById('model');
+            
+            makeSelect.innerHTML = '<option value="">Select Make</option>';
+            modelSelect.innerHTML = '<option value="">Select Make First</option>';
+            modelSelect.disabled = true;
+            
+            if (this.value) {
+                makeSelect.disabled = false;
+                const makes = sampleMakes[this.value] || sampleMakes['2020'];
+                
+                makes.forEach(make => {
+                    const option = document.createElement('option');
+                    option.value = make;
+                    option.textContent = make;
+                    makeSelect.appendChild(option);
+                });
+            } else {
+                makeSelect.disabled = true;
+            }
+        });
+
+        // Make selection handler
+        document.getElementById('make').addEventListener('change', function() {
+            const modelSelect = document.getElementById('model');
+            
+            modelSelect.innerHTML = '<option value="">Select Model</option>';
+            
+            if (this.value) {
+                modelSelect.disabled = false;
+                const models = sampleModels[this.value] || ['Model 1', 'Model 2', 'Model 3'];
+                
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            } else {
+                modelSelect.disabled = true;
+            }
+        });
+
+        // Form submission
+        document.getElementById('vehicleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const year = document.getElementById('year').value;
+            const make = document.getElementById('make').value;
+            const model = document.getElementById('model').value;
+            const alert = document.getElementById('alert');
+            const searchBtn = document.getElementById('searchBtn');
+            
+            if (!year || !make || !model) {
+                alert.className = 'alert error';
+                alert.textContent = 'Please fill in all fields';
+                alert.style.display = 'block';
+                return;
+            }
+
+            // Show loading state
+            searchBtn.classList.add('loading');
+            searchBtn.disabled = true;
+            alert.style.display = 'none';
+
+            // MILESTONE 1: Simulate search
+            console.log('Searching for tires:', { year, make, model });
+            
+            setTimeout(() => {
+                searchBtn.classList.remove('loading');
+                searchBtn.disabled = false;
+                
+                alert.className = 'alert success';
+                alert.textContent = `Found tires for ${year} ${make} ${model}! (API not connected yet)`;
+                alert.style.display = 'block';
+                
+                // MILESTONE 2+: Will redirect to results page
+                setTimeout(() => {
+                    alert.className = 'alert info';
+                    alert.textContent = 'Redirecting to results page...';
+                    // window.location.href = `results.html?year=${year}&make=${make}&model=${model}`;
+                }, 1500);
+            }, 2000);
+
+            /* MILESTONE 2+ CODE (uncomment when backend is ready):
+            
+            // Call your backend API
+            fetch('/api/search-tires', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ year, make, model })
+            })
+            .then(response => response.json())
+            .then(data => {
+                searchBtn.classList.remove('loading');
+                searchBtn.disabled = false;
+                
+                if (data.success) {
+                    // Redirect to results page
+                    window.location.href = `results.html?year=${year}&make=${make}&model=${model}`;
+                } else {
+                    alert.className = 'alert error';
+                    alert.textContent = data.message || 'Search failed';
+                    alert.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                searchBtn.classList.remove('loading');
+                searchBtn.disabled = false;
+                
+                alert.className = 'alert error';
+                alert.textContent = 'Error connecting to server';
+                alert.style.display = 'block';
+                console.error('Error:', error);
+            });
+            */
+        });
+
+        // Logout function
+        function logout() {
+            // MILESTONE 1: Simple redirect
+            alert('Logging out... (not connected yet)');
+            // window.location.href = 'login.html';
+            
+            /* MILESTONE 2+ CODE:
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+            */
+        }
+    </script>
+</body>
+</html>
