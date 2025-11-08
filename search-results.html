@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tire Search Results - Tire Shop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: #ffffff;
+            padding: 16px 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-decoration: none;
+        }
+
+        .navbar-brand span {
+            margin-left: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar-menu a:hover {
+            color: #dc2626;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Header Section */
+        .search-header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-header h1 {
+            color: #1a1a1a;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .vehicle-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .vehicle-badge {
+            background: #f8f8f8;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-count {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            background: #f0f0f0;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #e0e0e0;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #f8f8f8;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: white;
+        }
+
+        /* Tire Grid */
+        .tire-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .tire-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tire-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .tire-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .tire-brand {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .tire-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+        }
+
+        .tire-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+
+        .spec-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .spec-value {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .tire-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 15px;
+        }
+
+        .tire-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* No Results */
+        .no-results {
+            background: white;
+            border-radius: 12px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .no-results-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .no-results h2 {
+            color: #1a1a1a;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .no-results p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 16px;
+                padding: 16px 20px;
+            }
+
+            .tire-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .vehicle-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="home.html" class="navbar-brand">
+            <span>🚗</span>
+            <span>Tire Shop</span>
+        </a>
+        <div class="navbar-menu">
+            <a href="home.html">Home</a>
+            <a href="search-results.html">Find Tires</a>
+            <a href="my-vehicles.html">My Vehicles</a>
+            <a href="tutorial.html">Tutorial</a>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Header -->
+        <div class="search-header">
+            <h1>Tire Search Results</h1>
+            <div class="vehicle-info">
+                <div class="vehicle-badge" id="vehicleDisplay">Loading...</div>
+                <div class="result-count" id="resultCount">0 tires found</div>
+            </div>
+            <a href="home.html" class="back-btn">← New Search</a>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-title">🔍 Filter Results</div>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="sortBy">Sort By</label>
+                    <select id="sortBy">
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="brand">Brand (A-Z)</option>
+                        <option value="rating">Rating</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="brandFilter">Brand</label>
+                    <select id="brandFilter">
+                        <option value="">All Brands</option>
+                        <option value="Michelin">Michelin</option>
+                        <option value="Goodyear">Goodyear</option>
+                        <option value="Bridgestone">Bridgestone</option>
+                        <option value="Continental">Continental</option>
+                        <option value="Pirelli">Pirelli</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="maxPrice">Max Price</label>
+                    <input type="number" id="maxPrice" placeholder="Any" min="0" step="10">
+                </div>
+                <div class="filter-group">
+                    <label for="seasonFilter">Season</label>
+                    <select id="seasonFilter">
+                        <option value="">All Seasons</option>
+                        <option value="All-Season">All-Season</option>
+                        <option value="Summer">Summer</option>
+                        <option value="Winter">Winter</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+            <p>Searching for tires...</p>
+        </div>
+
+        <!-- Tire Grid -->
+        <div id="tireGrid" class="tire-grid" style="display: none;"></div>
+
+        <!-- No Results -->
+        <div id="noResults" class="no-results" style="display: none;">
+            <div class="no-results-icon">🔍</div>
+            <h2>No Tires Found</h2>
+            <p>We couldn't find any tires matching your criteria. Try adjusting your filters or search again.</p>
+            <a href="home.html" class="btn btn-primary">New Search</a>
+        </div>
+    </div>
+
+    <script>
+        // Get vehicle info from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const year = urlParams.get('year') || '2024';
+        const make = urlParams.get('make') || 'Toyota';
+        const model = urlParams.get('model') || 'Camry';
+
+        // Display vehicle info
+        document.getElementById('vehicleDisplay').textContent = `${year} ${make} ${model}`;
+
+        // Sample tire data (MILESTONE 1)
+        // MILESTONE 2+: This will come from your backend API
+        const sampleTires = [
+            {
+                id: 1,
+                brand: 'Michelin',
+                name: 'Defender T+H',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 189.99,
+                link: 'https://www.michelinman.com'
+            },
+            {
+                id: 2,
+                brand: 'Goodyear',
+                name: 'Assurance WeatherReady',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 169.99,
+                link: 'https://www.goodyear.com'
+            },
+            {
+                id: 3,
+                brand: 'Bridgestone',
+                name: 'Turanza QuietTrack',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 199.99,
+                link: 'https://www.bridgestonetire.com'
+            },
+            {
+                id: 4,
+                brand: 'Continental',
+                name: 'PureContact LS',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 179.99,
+                link: 'https://www.continental-tires.com'
+            },
+            {
+                id: 5,
+                brand: 'Pirelli',
+                name: 'Cinturato P7 All Season Plus',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 194.99,
+                link: 'https://www.pirelli.com'
+            },
+            {
+                id: 6,
+                brand: 'Michelin',
+                name: 'Primacy Tour A/S',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 209.99,
+                link: 'https://www.michelinman.com'
+            },
+            {
+                id: 7,
+                brand: 'Goodyear',
+                name: 'Eagle Sport All-Season',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 159.99,
+                link: 'https://www.goodyear.com'
+            },
+            {
+                id: 8,
+                brand: 'Bridgestone',
+                name: 'Ecopia EP422 Plus',
+                size: '225/65R17',
+                loadIndex: '102',
+                speedRating: 'H',
+                psi: '35',
+                ply: '4-Ply',
+                season: 'All-Season',
+                price: 174.99,
+                link: 'https://www.bridgestonetire.com'
+            }
+        ];
+
+        let currentTires = [...sampleTires];
+
+        // Simulate loading
+        setTimeout(() => {
+            document.getElementById('loadingState').style.display = 'none';
+            displayTires(currentTires);
+        }, 1500);
+
+        // Display tires
+        function displayTires(tires) {
+            const grid = document.getElementById('tireGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (tires.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                document.getElementById('resultCount').textContent = '0 tires found';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+            document.getElementById('resultCount').textContent = `${tires.length} tire${tires.length !== 1 ? 's' : ''} found`;
+
+            grid.innerHTML = tires.map(tire => `
+                <div class="tire-card">
+                    <div class="tire-image">🛞</div>
+                    <div class="tire-brand">${tire.brand}</div>
+                    <div class="tire-name">${tire.name}</div>
+                    <div class="tire-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">Size</span>
+                            <span class="spec-value">${tire.size}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Load/Speed</span>
+                            <span class="spec-value">${tire.loadIndex}${tire.speedRating}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">PSI</span>
+                            <span class="spec-value">${tire.psi}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Ply Rating</span>
+                            <span class="spec-value">${tire.ply}</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Season</span>
+                            <span class="spec-value">${tire.season}</span>
+                        </div>
+                    </div>
+                    <div class="tire-price">$${tire.price.toFixed(2)}</div>
+                    <div class="tire-actions">
+                        <a href="${tire.link}" target="_blank" class="btn btn-primary">View Details</a>
+                        <button class="btn btn-secondary" onclick="saveTire(${tire.id})">Save</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter functionality
+        function applyFilters() {
+            const sortBy = document.getElementById('sortBy').value;
+            const brand = document.getElementById('brandFilter').value;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            const season = document.getElementById('seasonFilter').value;
+
+            // Filter tires
+            let filtered = sampleTires.filter(tire => {
+                if (brand && tire.brand !== brand) return false;
+                if (tire.price > maxPrice) return false;
+                if (season && tire.season !== season) return false;
+                return true;
+            });
+
+            // Sort tires
+            switch(sortBy) {
+                case 'price-low':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-high':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'brand':
+                    filtered.sort((a, b) => a.brand.localeCompare(b.brand));
+                    break;
+            }
+
+            currentTires = filtered;
+            displayTires(currentTires);
+        }
+
+        // Event listeners for filters
+        document.getElementById('sortBy').addEventListener('change', applyFilters);
+        document.getElementById('brandFilter').addEventListener('change', applyFilters);
+        document.getElementById('maxPrice').addEventListener('input', applyFilters);
+        document.getElementById('seasonFilter').addEventListener('change', applyFilters);
+
+        // Save tire function
+        function saveTire(tireId) {
+            const tire = sampleTires.find(t => t.id === tireId);
+            console.log('Saving tire:', tire);
+            
+            // MILESTONE 1: Just show alert
+            alert(`Saved ${tire.brand} ${tire.name}! (Feature not connected yet)`);
+            
+            /* MILESTONE 2+ CODE:
+            fetch('/api/save-tire', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({ tireId, vehicleInfo: { year, make, model } })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Tire saved successfully!');
+                }
+            });
+            */
+        }
+
+        // Logout function
+        function logout() {
+            alert('Logging out... (not connected yet)');
+            // window.location.href = 'index.html';
+        }
+
+        /* MILESTONE 2+ CODE (Backend API Integration):
+        
+        // Fetch real tire data from backend
+        async function fetchTires() {
+            try {
+                const response = await fetch(`/api/search-tires?year=${year}&make=${make}&model=${model}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    sampleTires = data.tires;
+                    currentTires = [...sampleTires];
+                    displayTires(currentTires);
+                } else {
+                    document.getElementById('noResults').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching tires:', error);
+                document.getElementById('noResults').style.display = 'block';
+            } finally {
+                document.getElementById('loadingState').style.display = 'none';
+            }
+        }
+        
+        // Call on page load
+        fetchTires();
+        */
+    </script>
+</body>
+</html>
