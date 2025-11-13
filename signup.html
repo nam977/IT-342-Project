@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tire Shop - Sign Up</title>
+    <!-- Styles are identical to the login page for consistency -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Re-using .login-container class for consistent styling */
+        .login-container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-section h1 {
+            color: #1a1a1a;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .logo-section .tagline {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f8f8;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: #ffffff;
+        }
+
+        /* Removed .remember-forgot class */
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+            margin-top: 10px; /* Added margin to replace .remember-forgot space */
+        }
+
+        .login-btn:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 16px;
+        }
+
+        .signup-section {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .signup-section a {
+            color: #dc2626;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-section a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .alert.error {
+            background: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+        }
+
+        .alert.success {
+            background: #efe;
+            color: #0a0;
+            border: 1px solid #cfc;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container"> <!-- Re-using class from login page -->
+        <div class="logo-section">
+            <div class="logo-icon">🚗</div>
+            <h1>Tire Match</h1>
+            <p class="tagline">Create your account</p> <!-- Updated tagline -->
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Enter your email"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    placeholder="Choose a username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    placeholder="Create a password"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    placeholder="Confirm your password"
+                    required
+                >
+            </div>
+
+            <!-- Removed "Remember me" and "Forgot Password" -->
+
+            <button type="submit" class="login-btn">Create Account</button>
+        </form>
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="signup-section">
+            Already have an account? <a href="index.html">Sign In</a> <!-- Assumes login page is index.html -->
+        </div>
+    </div>
+
+    <!-- AWS Cognito SDK - ONLY NEEDED FOR MILESTONE 2 -->
+    <!-- Uncomment this line when ready for Milestone 2: -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.6/dist/amazon-cognito-identity.min.js"></script> -->
+
+    <script>
+        // MILESTONE 1: Basic form validation
+        // MILESTONE 2: Will use AWS Cognito for real sign-up
+        
+        // Configuration for Milestone 2 (replace with your actual values)
+        const COGNITO_CONFIG = {
+            UserPoolId: 'us-east-1_XXXXXXXXX',  // Replace with your User Pool ID
+            ClientId: 'XXXXXXXXXXXXXXXXXX',      // Replace with your Client ID
+            Region: 'us-east-1'
+        };
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const alert = document.getElementById('alert');
+            
+            // MILESTONE 1 CODE (current):
+            if (!email || !username || !password || !confirmPassword) {
+                alert.className = 'alert error';
+                alert.textContent = 'Please fill in all fields';
+                alert.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert.className = 'alert error';
+                alert.textContent = 'Passwords do not match';
+                alert.style.display = 'block';
+                return;
+            }
+
+            // All good (for Milestone 1)
+            alert.className = 'alert success';
+            alert.textContent = 'Account created! (Verification not connected yet)';
+            alert.style.display = 'block';
+            
+            console.log('Email:', email);
+            console.log('Username:', username);
+            
+            // Simulate redirect to a verification page or login page
+            setTimeout(() => {
+                alert.textContent = 'Redirecting to login...';
+                // In a real app, you might redirect to a "Please verify your email" page
+                // or directly to the login page.
+                // window.location.href = 'index.html'; 
+            }, 1500);
+
+            
+            /* MILESTONE 2 CODE (uncomment when ready):
+            
+            // Initialize Cognito User Pool
+            const poolData = {
+                UserPoolId: COGNITO_CONFIG.UserPoolId,
+                ClientId: COGNITO_CONFIG.ClientId
+            };
+            const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+            
+            // Prepare attributes (e.g., email)
+            const attributeList = [];
+            
+            const dataEmail = {
+                Name: 'email',
+                Value: email,
+            };
+            
+            const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+            attributeList.push(attributeEmail);
+            
+            // (Add other attributes like 'name', 'phone_number' if your pool requires them)
+
+            // Sign up the user
+            userPool.signUp(username, password, attributeList, null, function(err, result) {
+                if (err) {
+                    alert.className = 'alert error';
+                    alert.textContent = err.message || 'Sign-up failed';
+                    alert.style.display = 'block';
+                    return;
+                }
+                
+                // Sign-up was successful
+                const cognitoUser = result.user;
+                console.log('User registered:', cognitoUser.getUsername());
+
+                alert.className = 'alert success';
+                alert.textContent = 'Sign-up successful! Please check your email for a verification code.';
+                alert.style.display = 'block';
+                
+                // Redirect to a verification page
+                setTimeout(() => {
+                    // Pass the username to the verification page
+                    window.location.href = `verify.html?username=${username}`;
+                }, 2000);
+            });
+            */
+        });
+    </script>
+</body>
+</html>
