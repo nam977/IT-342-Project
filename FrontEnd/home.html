@@ -57,6 +57,80 @@
             color: #dc2626;
         }
 
+        /* Global Search Bar */
+        .search-container {
+            position: relative;
+            margin: 0 20px;
+        }
+
+        .global-search {
+            padding: 8px 40px 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            width: 300px;
+            transition: all 0.3s ease;
+            background: #f8f8f8;
+        }
+
+        .global-search:focus {
+            outline: none;
+            border-color: #dc2626;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            cursor: pointer;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: #f8f8f8;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-category {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .suggestion-name {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
         .logout-btn {
             background: #dc2626;
             color: white;
@@ -294,6 +368,17 @@
                 padding: 16px 20px;
             }
 
+            .navbar-menu {
+                flex-direction: column;
+                gap: 16px;
+                width: 100%;
+            }
+
+            .global-search {
+                width: 100%;
+                margin: 10px 0;
+            }
+
             .hero h1 {
                 font-size: 36px;
             }
@@ -316,10 +401,15 @@
             <span>Tire Shop</span>
         </a>
         <div class="navbar-menu">
-            <a href="index.html">Home</a>
-            <a href="search.html">Find Tires</a>
+            <a href="home.html">Home</a>
+            <a href="tire-finder.html">Find Tires</a>
             <a href="#">My Vehicles</a>
             <a href="#">Tutorial</a>
+            <div class="search-container">
+                <input type="text" class="global-search" placeholder="Search tires by brand, model..." id="globalSearch">
+                <span class="search-icon" onclick="performGlobalSearch()">🔍</span>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </nav>
@@ -546,15 +636,119 @@
             */
         });
 
+        // Global Search Functionality
+        const tireDatabase = [
+            // Popular tire brands and models
+            { type: 'brand', name: 'Michelin', category: 'Brand' },
+            { type: 'brand', name: 'Bridgestone', category: 'Brand' },
+            { type: 'brand', name: 'Goodyear', category: 'Brand' },
+            { type: 'brand', name: 'Continental', category: 'Brand' },
+            { type: 'brand', name: 'Pirelli', category: 'Brand' },
+            { type: 'brand', name: 'Yokohama', category: 'Brand' },
+            { type: 'brand', name: 'Dunlop', category: 'Brand' },
+            { type: 'brand', name: 'Falken', category: 'Brand' },
+            { type: 'brand', name: 'Cooper', category: 'Brand' },
+            { type: 'brand', name: 'Hankook', category: 'Brand' },
+            
+            // Popular tire models
+            { type: 'model', name: 'Michelin Pilot Sport 4S', category: 'Performance Tire', brand: 'Michelin' },
+            { type: 'model', name: 'Bridgestone Potenza RE-71RS', category: 'Performance Tire', brand: 'Bridgestone' },
+            { type: 'model', name: 'Goodyear Eagle F1 Asymmetric', category: 'Performance Tire', brand: 'Goodyear' },
+            { type: 'model', name: 'Continental ExtremeContact DWS06', category: 'All-Season Tire', brand: 'Continental' },
+            { type: 'model', name: 'Pirelli P Zero', category: 'Performance Tire', brand: 'Pirelli' },
+            { type: 'model', name: 'Michelin CrossClimate 2', category: 'All-Season Tire', brand: 'Michelin' },
+            { type: 'model', name: 'Bridgestone Blizzak WS90', category: 'Winter Tire', brand: 'Bridgestone' },
+            { type: 'model', name: 'Goodyear Assurance WeatherReady', category: 'All-Season Tire', brand: 'Goodyear' },
+            { type: 'model', name: 'Continental TerrainContact H/T', category: 'Highway Tire', brand: 'Continental' },
+            { type: 'model', name: 'Cooper Discoverer AT3 4S', category: 'All-Terrain Tire', brand: 'Cooper' },
+            
+            // Tire categories
+            { type: 'category', name: 'All-Season Tires', category: 'Category' },
+            { type: 'category', name: 'Performance Tires', category: 'Category' },
+            { type: 'category', name: 'Winter Tires', category: 'Category' },
+            { type: 'category', name: 'All-Terrain Tires', category: 'Category' },
+            { type: 'category', name: 'Highway Tires', category: 'Category' },
+            { type: 'category', name: 'Mud-Terrain Tires', category: 'Category' }
+        ];
+
+        let searchTimeout;
+        
+        // Global search input handler
+        document.getElementById('globalSearch').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            const suggestions = document.getElementById('searchSuggestions');
+            
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                suggestions.style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(() => {
+                const filtered = tireDatabase.filter(item => 
+                    item.name.toLowerCase().includes(query) ||
+                    item.category.toLowerCase().includes(query) ||
+                    (item.brand && item.brand.toLowerCase().includes(query))
+                ).slice(0, 8); // Limit to 8 suggestions
+                
+                if (filtered.length > 0) {
+                    suggestions.innerHTML = filtered.map(item => `
+                        <div class=\"suggestion-item\" onclick=\"selectSuggestion('${item.name}', '${item.type}')\">
+                            <div class=\"suggestion-category\">${item.category}</div>
+                            <div class=\"suggestion-name\">${item.name}</div>
+                        </div>
+                    `).join('');
+                    suggestions.style.display = 'block';
+                } else {
+                    suggestions.innerHTML = '<div class=\"suggestion-item\"><div class=\"suggestion-name\">No results found</div></div>';
+                    suggestions.style.display = 'block';
+                }
+            }, 300);
+        });
+
+        // Handle search suggestion selection
+        function selectSuggestion(name, type) {
+            document.getElementById('globalSearch').value = name;
+            document.getElementById('searchSuggestions').style.display = 'none';
+            performGlobalSearch();
+        }
+
+        // Perform global search
+        function performGlobalSearch() {
+            const query = document.getElementById('globalSearch').value.trim();
+            if (query) {
+                // Redirect to search results with the query
+                window.location.href = `search-results.html?q=${encodeURIComponent(query)}&type=tire`;
+            }
+        }
+
+        // Handle Enter key in search
+        document.getElementById('globalSearch').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                performGlobalSearch();
+            }
+            if (e.key === 'Escape') {
+                document.getElementById('searchSuggestions').style.display = 'none';
+            }
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                document.getElementById('searchSuggestions').style.display = 'none';
+            }
+        });
+
         // Logout function
         function logout() {
             // MILESTONE 1: Simple redirect
             alert('Logging out... (not connected yet)');
-            // window.location.href = 'login.html';
+            // window.location.href = 'index.html';
             
             /* MILESTONE 2+ CODE:
             localStorage.removeItem('token');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
             */
         }
     </script>
